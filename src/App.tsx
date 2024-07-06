@@ -2,9 +2,12 @@ import { useState } from 'react'
 
 import './App.css'
 import {goods} from "./data/data.tsx";
-import BasketList from "./Components/BasketList/BasketList.tsx";
 import GoodsList from "./Components/GoodsList/GoodsList.tsx";
 import Search from "./Components/Search/Search.tsx";
+import Header from "./Components/Header/Header.tsx";
+import {Container} from "@mui/material";
+import Basket from "./Components/Basket/Basket.tsx";
+import Snack from "./Components/Snack/Snack.tsx";
 
 
 
@@ -12,6 +15,8 @@ const App = () => {
   const [order, setOrder] = useState([]);
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState(goods);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSnackOpen, setSnackOpen] = useState(false)
 
   const handleChange = (e) => {
     if (!e.target.value) {
@@ -60,6 +65,8 @@ const App = () => {
           ],
       );
     }
+
+    setSnackOpen(true);
   };
 
   const removeFromOrder = (goodsItem) => {
@@ -67,22 +74,34 @@ const App = () => {
   };
 
   return (
-      <div className='App'>
-        <div className='container'>
-          <Search
-              value={search}
-              onChange={handleChange}
+      <>
+          <Header
+              orderLen = {order.length}
+              handleCart={()=>setIsCartOpen(true)}
           />
-          <GoodsList
-              goods={products}
-              setOrder={addToOrder}
-          />
-          <BasketList
+
+          <Container
+            sx={{mt:"1rem"}}>
+              <Search
+                  value={search}
+                  onChange={handleChange}
+              />
+              <GoodsList
+                  goods={products}
+                  setOrder={addToOrder}
+              />
+
+          </Container>
+          <Basket
               order={order}
-              setOrder={removeFromOrder}
+              removeFromOrder={removeFromOrder}
+              cartOpen={isCartOpen}
+              closeCart = {()=>setIsCartOpen(false)}
           />
-        </div>
-      </div>
+          <Snack
+              isOpen={isSnackOpen}
+              handleClose={()=>setSnackOpen(false)}/>
+      </>
   );
 }
 
